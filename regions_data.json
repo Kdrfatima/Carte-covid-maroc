@@ -1,362 +1,123 @@
-{
-    "TTH": {
-        "region": "Tanger-Tétouan-Al Hoceima",
-        "data": [
-            {
-                "category": "Santé",
-                "value": 45,
-                "color": "#FF6B6B"
-            },
-            {
-                "category": "Éducation",
-                "value": 35,
-                "color": "#4ECDC4"
-            },
-            {
-                "category": "Infrastructure",
-                "value": 60,
-                "color": "#45B7D1"
-            },
-            {
-                "category": "Tourisme",
-                "value": 80,
-                "color": "#FFA07A"
-            },
-            {
-                "category": "Agriculture",
-                "value": 40,
-                "color": "#98D8C8"
-            }
-        ]
-    },
-    "OR": {
-        "region": "Oriental",
-        "data": [
-            {
-                "category": "Santé",
-                "value": 30,
-                "color": "#FF6B6B"
-            },
-            {
-                "category": "Éducation",
-                "value": 25,
-                "color": "#4ECDC4"
-            },
-            {
-                "category": "Infrastructure",
-                "value": 35,
-                "color": "#45B7D1"
-            },
-            {
-                "category": "Tourisme",
-                "value": 45,
-                "color": "#FFA07A"
-            },
-            {
-                "category": "Industrie",
-                "value": 55,
-                "color": "#F7DC6F"
-            }
-        ]
-    },
-    "FM": {
-        "region": "Fès-Meknès",
-        "data": [
-            {
-                "category": "Santé",
-                "value": 35,
-                "color": "#FF6B6B"
-            },
-            {
-                "category": "Éducation",
-                "value": 45,
-                "color": "#4ECDC4"
-            },
-            {
-                "category": "Infrastructure",
-                "value": 40,
-                "color": "#45B7D1"
-            },
-            {
-                "category": "Artisanat",
-                "value": 70,
-                "color": "#BB8FCE"
-            },
-            {
-                "category": "Agriculture",
-                "value": 55,
-                "color": "#98D8C8"
-            }
-        ]
-    },
-    "RSK": {
-        "region": "Rabat-Salé-Kénitra",
-        "data": [
-            {
-                "category": "Santé",
-                "value": 55,
-                "color": "#FF6B6B"
-            },
-            {
-                "category": "Éducation",
-                "value": 75,
-                "color": "#4ECDC4"
-            },
-            {
-                "category": "Infrastructure",
-                "value": 65,
-                "color": "#45B7D1"
-            },
-            {
-                "category": "Administration",
-                "value": 95,
-                "color": "#85C1E9"
-            },
-            {
-                "category": "Services",
-                "value": 85,
-                "color": "#F8C471"
-            }
-        ]
-    },
-    "BK": {
-        "region": "Béni Mellal-Khénifra",
-        "data": [
-            {
-                "category": "Santé",
-                "value": 28,
-                "color": "#FF6B6B"
-            },
-            {
-                "category": "Éducation",
-                "value": 32,
-                "color": "#4ECDC4"
-            },
-            {
-                "category": "Infrastructure",
-                "value": 38,
-                "color": "#45B7D1"
-            },
-            {
-                "category": "Agriculture",
-                "value": 75,
-                "color": "#98D8C8"
-            },
-            {
-                "category": "Énergie",
-                "value": 42,
-                "color": "#F7DC6F"
-            }
-        ]
-    },
-    "CS": {
-        "region": "Casablanca-Settat",
-        "data": [
-            {
-                "category": "Santé",
-                "value": 85,
-                "color": "#FF6B6B"
-            },
-            {
-                "category": "Éducation",
-                "value": 65,
-                "color": "#4ECDC4"
-            },
-            {
-                "category": "Infrastructure",
-                "value": 90,
-                "color": "#45B7D1"
-            },
-            {
-                "category": "Tourisme",
-                "value": 120,
-                "color": "#FFA07A"
-            },
-            {
-                "category": "Industrie",
-                "value": 150,
-                "color": "#F7DC6F"
-            }
-        ]
-    },
-    "MS": {
-        "region": "Marrakesh-Safi",
-        "data": [
-            {
-                "category": "Santé",
-                "value": 40,
-                "color": "#FF6B6B"
-            },
-            {
-                "category": "Éducation",
-                "value": 30,
-                "color": "#4ECDC4"
-            },
-            {
-                "category": "Tourisme",
-                "value": 110,
-                "color": "#FFA07A"
-            },
-            {
-                "category": "Artisanat",
-                "value": 65,
-                "color": "#BB8FCE"
-            },
-            {
-                "category": "Agriculture",
-                "value": 50,
-                "color": "#98D8C8"
-            }
-        ]
-    },
-    "DT": {
-        "region": "Drâa-Tafilalet",
-        "data": [
-            {
-                "category": "Santé",
-                "value": 22,
-                "color": "#FF6B6B"
-            },
-            {
-                "category": "Éducation",
-                "value": 18,
-                "color": "#4ECDC4"
-            },
-            {
-                "category": "Tourisme",
-                "value": 35,
-                "color": "#FFA07A"
-            },
-            {
-                "category": "Artisanat",
-                "value": 28,
-                "color": "#BB8FCE"
-            },
-            {
-                "category": "Agriculture",
-                "value": 42,
-                "color": "#98D8C8"
-            }
-        ]
-    },
-    "SM": {
-        "region": "Souss-Massa",
-        "data": [
-            {
-                "category": "Santé",
-                "value": 30,
-                "color": "#FF6B6B"
-            },
-            {
-                "category": "Éducation",
-                "value": 25,
-                "color": "#4ECDC4"
-            },
-            {
-                "category": "Agriculture",
-                "value": 85,
-                "color": "#98D8C8"
-            },
-            {
-                "category": "Pêche",
-                "value": 45,
-                "color": "#5499C7"
-            },
-            {
-                "category": "Tourisme",
-                "value": 60,
-                "color": "#FFA07A"
-            }
-        ]
-    },
-    "GO": {
-        "region": "Guelmim-Oued Noun",
-        "data": [
-            {
-                "category": "Santé",
-                "value": 15,
-                "color": "#FF6B6B"
-            },
-            {
-                "category": "Éducation",
-                "value": 12,
-                "color": "#4ECDC4"
-            },
-            {
-                "category": "Pêche",
-                "value": 25,
-                "color": "#5499C7"
-            },
-            {
-                "category": "Tourisme",
-                "value": 18,
-                "color": "#FFA07A"
-            },
-            {
-                "category": "Élevage",
-                "value": 22,
-                "color": "#A569BD"
-            }
-        ]
-    },
-    "LS": {
-        "region": "Laâyoune-Sakia El Hamra",
-        "data": [
-            {
-                "category": "Santé",
-                "value": 20,
-                "color": "#FF6B6B"
-            },
-            {
-                "category": "Éducation",
-                "value": 15,
-                "color": "#4ECDC4"
-            },
-            {
-                "category": "Pêche",
-                "value": 30,
-                "color": "#5499C7"
-            },
-            {
-                "category": "Tourisme",
-                "value": 25,
-                "color": "#FFA07A"
-            },
-            {
-                "category": "Industrie",
-                "value": 35,
-                "color": "#F7DC6F"
-            }
-        ]
-    },
-    "DO": {
-        "region": "Dakhla-Oued Ed-Dahab",
-        "data": [
-            {
-                "category": "Santé",
-                "value": 18,
-                "color": "#FF6B6B"
-            },
-            {
-                "category": "Éducation",
-                "value": 14,
-                "color": "#4ECDC4"
-            },
-            {
-                "category": "Pêche",
-                "value": 40,
-                "color": "#5499C7"
-            },
-            {
-                "category": "Tourisme",
-                "value": 32,
-                "color": "#FFA07A"
-            },
-            {
-                "category": "Énergie",
-                "value": 28,
-                "color": "#F7DC6F"
-            }
-        ]
-    }
-}
+[
+{   "region":"Tanger-Tétouan-Al Hoceima",
+    "Code":"TTH",
+    "Confirmed":12974.0,
+    "Deaths":2263,
+    "Recovered":106044,
+    "id":"TTH",
+    "latitude":35.783621,
+    "longitude":-5.809643,
+    "population":3813854.0,
+    "contribution_gdp":"10.80%"},
+{   "region":"Oriental",
+    "Code":"OR",
+    "Confirmed":3547.0,
+    "Deaths":2263,
+    "Recovered":106044,
+    "id":"OR",
+    "latitude":34.68,
+    "longitude":-1.91,
+    "population":2453229.0,
+    "contribution_gdp":"4.90%"},
+{   "region":"Fès-Meknès",
+    "Code":"FM",    
+    "Confirmed":11811.0,    
+    "Deaths":2263,  
+    "Recovered":106044, 
+    "id":"FM",  
+    "latitude":34.03712,    
+    "longitude":-5.002964,  
+    "population":4405862.0, 
+    "contribution_gdp":"8.40%"},
+{   "region":"Rabat-Salé-Kénitra",  
+    "Code":"RSK",   
+    "Confirmed":13908.0,    
+    "Deaths":2263,  
+    "Recovered":106044, 
+    "id":"RSK", 
+    "latitude":34.02,   
+    "longitude":-6.83,
+    "population":4867744.0, 
+    "contribution_gdp":"15.60%"},
+{   
+    "region":"Béni Mellal-Khénifra",    
+    "Code":"BK",    
+    "Confirmed":6478.0, 
+    "Deaths":2263,
+    "Recovered":106044,
+    "id":"BK",
+    "latitude":32.320296,
+    "longitude":-6.380926,
+    "population":2613137.0,
+    "contribution_gdp":"5.70%"},
+{   "region":"Casablanca-Settat",
+    "Code":"CS",
+    "Confirmed":45774.0,
+    "Deaths":2263,
+    "Recovered":106044,
+    "id":"CS",
+    "latitude":33.59,
+    "longitude":-7.61,
+    "population":7408213.0,
+    "contribution_gdp":"32.30%"},
+{  "region":"Marrakesh-Safi",
+    "Code":"MS",
+    "Confirmed":16129.0,
+    "Deaths":2263,
+    "Recovered":106044,
+    "id":"MS",
+    "latitude":null,
+    "longitude":null,
+    "population":null,
+    "contribution_gdp":null},
+{   "region":"Drâa-Tafilalet",
+    "Code":"DT",
+    "Confirmed":7577.0,
+    "Deaths":2263,
+    "Recovered":106044,
+    "id":"DT",
+    "latitude":31.932124,
+    "longitude":-4.424149,
+    "population":1693786.0,
+    "contribution_gdp":"2.50%"},
+{   "region":"Souss-Massa",
+    "Code":"SM",
+    "Confirmed":6055.0,
+    "Deaths":2263,
+    "Recovered":106044,
+    "id":"SM",
+    "latitude":30.42144,
+    "longitude":-9.583039,
+    "population":2896152.0,
+    "contribution_gdp":"6.70%"},
+{   "region":"Guelmim-Oued Noun",  
+    "Code":"GO",
+    "Confirmed":811.0,
+    "Deaths":2263,
+    "Recovered":106044,
+    "id":"GO",
+    "latitude":28.986355,
+    "longitude":-10.057375,
+    "population":446225.0,
+    "contribution_gdp":"1.40%"},
+{   "region":"Laâyoune-Sakia El Hamra",
+    "Code":"LS",
+    "Confirmed":1625.0,
+    "Deaths":2263,
+    "Recovered":106044,
+    "id":"LS",
+    "latitude":27.158507,
+    "longitude":-13.207878,
+    "population":400442.0,
+    "contribution_gdp":"1.70%"},
+{   "region":"Dakhla-Oued Ed-Dahab",
+    "Code":"DO",
+    "Confirmed":1899.0,
+    "Deaths":2263,
+    "Recovered":106044,
+    "id":"DO",
+    "latitude":23.692847,
+    "longitude":-15.938255,
+    "population":178600.0,
+    "contribution_gdp":"1.30%"}
+]

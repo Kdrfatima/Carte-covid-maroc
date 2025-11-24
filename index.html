@@ -12,7 +12,7 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, rgb(73, 198, 255) 0%, #92fdc8 100%);
       min-height: 100vh;
     }
 
@@ -51,7 +51,7 @@
 
     .map-container,
     .chart-container {
-      background: white;
+      background: rgb(233, 225, 225);
       padding: 25px;
       border-radius: 15px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -71,8 +71,8 @@
     }
 
     .region {
-      fill: #4CAF50;
-      stroke: white;
+      fill: #b7ced3;
+      stroke: rgb(255, 255, 255);
       stroke-width: 1.5px;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -284,6 +284,20 @@
         }
       });
 
+      // Construire un mapping pour regionsData (le fichier est un tableau)
+      const regionsDataMap = {};
+      if (Array.isArray(regionsData)) {
+        regionsData.forEach(r => {
+          if (!r) return;
+          if (r.Code) regionsDataMap[r.Code] = r;
+          if (r.id) regionsDataMap[r.id] = r;
+          if (r.region) regionsDataMap[r.region] = r;
+          regionsDataMap[normalize(r.region)] = r;
+        });
+      } else if (typeof regionsData === 'object') {
+        Object.assign(regionsDataMap, regionsData);
+      }
+
       const maxCases = d3.max(covidData, d => d.Confirmed) || 1;
       regionColorScale.domain([0, maxCases]);
 
@@ -293,8 +307,8 @@
 
         // Essayer par code direct
         const code = props.code || props.id || props.ISO3166_2;
-        if (code && regionsData[code]) {
-          return { code, data: regionsData[code] };
+        if (code && regionsDataMap[code]) {
+          return { code, data: regionsDataMap[code] };
         }
 
         // Essayer par nom avec mapping
@@ -304,18 +318,19 @@
         // Chercher dans le mapping
         for (const [regionName, regionCode] of Object.entries(regionMapping)) {
           if (normalize(regionName) === normalizedName) {
-            if (regionsData[regionCode]) {
-              return { code: regionCode, data: regionsData[regionCode] };
-            }
+              if (regionsDataMap[regionCode]) {
+                return { code: regionCode, data: regionsDataMap[regionCode] };
+              }
           }
         }
 
         // Correspondance partielle
-        for (const [regionCode, regionData] of Object.entries(regionsData)) {
+        for (const [regionKey, regionData] of Object.entries(regionsDataMap)) {
+          if (!regionData || !regionData.region) continue;
           const regionNormalized = normalize(regionData.region);
           if (regionNormalized.includes(normalizedName) || normalizedName.includes(regionNormalized)) {
             console.log(`Correspondance partielle: ${name} -> ${regionData.region}`);
-            return { code: regionCode, data: regionData };
+            return { code: regionKey, data: regionData };
           }
         }
 
@@ -342,16 +357,23 @@
 
           let tooltipContent = `<strong>${name}</strong>`;
 
-          if (covidInfo) {
+          // Preferer les données complètes de regionsData (regionsDataMap) si disponibles
+          if (regionInfo && regionInfo.data) {
+            const rd = regionInfo.data;
+            if (rd.Confirmed != null) tooltipContent += `<br/>🦠 Cas confirmés: ${rd.Confirmed}`;
+            if (rd.Deaths != null) tooltipContent += `<br/>💀 Décès: ${rd.Deaths}`;
+            if (rd.Recovered != null) tooltipContent += `<br/>💚 Guérisons: ${rd.Recovered}`;
+            if (rd.population != null) tooltipContent += `<br/>👥 Population: ${Number(rd.population).toLocaleString()}`;
+            if (rd.contribution_gdp != null) tooltipContent += `<br/>🏦 PIB: ${rd.contribution_gdp}`;
+            tooltipContent += `<br/><em>✅ Données disponibles — cliquez pour détail</em>`;
+          } else if (covidInfo) {
+            // Fallback to covidData when regionsData not available
             tooltipContent += `<br/>🦠 Cas confirmés: ${covidInfo.Confirmed}`;
             tooltipContent += `<br/>💀 Décès: ${covidInfo.Deaths}`;
             if (covidInfo.population) {
               tooltipContent += `<br/>👥 Population: ${covidInfo.population.toLocaleString()}`;
             }
-          }
-
-          if (regionInfo) {
-            tooltipContent += `<br/>✅ Données disponibles - Cliquez !`;
+            tooltipContent += `<br/><em>✅ Données disponibles — cliquez pour détail</em>`;
           } else {
             tooltipContent += `<br/>❌ Données non disponibles`;
           }
@@ -420,11 +442,42 @@
     });
 
     // Fonction pour afficher le doughnut chart
-    function showDoughnutChart(regionCode, regionData) {
-      console.log("Affichage des données pour:", regionCode, regionData);
+    function showDoughnutChart(regionCode, regionDataRaw) {
+      // regionDataRaw: objet brut contenant les champs (Confirmed, Deaths, Recovered, population, contribution_gdp, ...)
+      console.log("Affichage des données pour:", regionCode, regionDataRaw);
 
       // Nettoyer le conteneur précédent
       doughnutContainer.selectAll("*").remove();
+
+      // Construire les catégories à afficher à partir de l'objet brut
+      const keysToShow = [
+        { key: 'Confirmed', label: 'Cas confirmés', color: '#ff6b6b' },
+        { key: 'Deaths', label: 'Décès', color: '#6b6bff' },
+        { key: 'Recovered', label: 'Guérisons', color: '#6bff95' },
+        { key: 'population', label: 'Population', color: '#ffa94d' },
+        { key: 'contribution_gdp', label: 'PIB (%)', color: '#8d6bff' }
+      ];
+
+      const data = [];
+      keysToShow.forEach(k => {
+        if (regionDataRaw[k.key] != null) {
+          let value = regionDataRaw[k.key];
+          // Convertir pourcentage string en nombre
+          if (typeof value === 'string' && value.trim().endsWith('%')) {
+            value = parseFloat(value.replace('%', '').replace(',', '.'));
+          }
+          // population might be null
+          if (typeof value === 'number' && !isNaN(value) && value > 0) {
+            data.push({ category: k.label, value: value, color: k.color });
+          }
+        }
+      });
+
+      // Si aucun champ numérique trouvé, afficher message
+      if (!data.length) {
+        showNoDataMessage(regionDataRaw.region || regionCode);
+        return;
+      }
 
       // Créer le conteneur principal
       const chartDiv = doughnutContainer.append("div")
@@ -433,7 +486,7 @@
       // Ajouter le titre
       chartDiv.append("h3")
         .attr("class", "chart-title")
-        .text(`📊 ${regionData.region}`);
+        .text(`📊 ${regionDataRaw.region || regionCode}`);
 
       // Créer le SVG pour le doughnut
       const svg = chartDiv.append("svg")
@@ -457,7 +510,7 @@
 
       // Créer les arcs
       const arcs = svg.selectAll("arc")
-        .data(pie(regionData.data))
+        .data(pie(data))
         .enter()
         .append("g")
         .attr("class", "arc");
@@ -469,7 +522,7 @@
         .attr("stroke", "white")
         .attr("stroke-width", 2)
         .on("mouseover", function (event, d) {
-          const total = d3.sum(regionData.data, x => x.value);
+          const total = d3.sum(data, x => x.value);
           const percentage = ((d.data.value / total) * 100).toFixed(1);
           tooltip.style("display", "block")
             .html(`
@@ -502,7 +555,7 @@
         .attr("class", "legend");
 
       const legendItems = legend.selectAll(".legend-item")
-        .data(regionData.data)
+        .data(data)
         .enter()
         .append("div")
         .attr("class", "legend-item");
@@ -516,7 +569,7 @@
         .text(d => `${d.category}: ${d.value}`);
 
       // Ajouter les statistiques
-      const total = d3.sum(regionData.data, d => d.value);
+      const total = d3.sum(data, d => d.value);
       const statsGrid = chartDiv.append("div")
         .attr("class", "stats-grid");
 
@@ -530,11 +583,11 @@
       statsGrid.append("div")
         .attr("class", "stat-card")
         .html(`
-                    <div class="stat-value">${regionData.data.length}</div>
+                    <div class="stat-value">${data.length}</div>
                     <div class="stat-label">Catégories</div>
                 `);
 
-      const maxCategory = d3.max(regionData.data, d => d.value);
+      const maxCategory = d3.max(data, d => d.value);
       statsGrid.append("div")
         .attr("class", "stat-card")
         .html(`
@@ -542,7 +595,7 @@
                     <div class="stat-label">Maximum</div>
                 `);
 
-      const avg = Math.round(total / regionData.data.length);
+      const avg = Math.round(total / data.length);
       statsGrid.append("div")
         .attr("class", "stat-card")
         .html(`

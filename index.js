@@ -21,7 +21,6 @@ const treemapColorScale = d3.scaleOrdinal(d3.schemeCategory10);
 Promise.all([
   d3.json("https://cdn.jsdelivr.net/npm/morocco-map/data/regions.json"),
   d3.json("./covid_regions_maroc.json"),
-  d3.json("./covid_regions_maroc.json")
 ])
   .then(([mapData, covidData, hierarchicalData]) => {
 
@@ -45,28 +44,162 @@ Promise.all([
     const covidById = {};
     const covidByNorm = {};
 
+    // Construire un mapping hiérarchique générique pour le treemap et indexer les données COVID
+    const hierarchicalMap = {};
     covidData.forEach(r => {
+      const code = r.Code || r.id || normalize(r.region);
+      const numbers = {};
+      const percentages = {};
+      const others = {};
+
+      Object.keys(r).forEach(key => {
+        if (key === 'region' || key === 'Code' || key === 'id' || key === 'latitude' || key === 'longitude') return;
+        const val = r[key];
+        if (val == null) return;
+        // Nombre
+        if (typeof val === 'number' && !isNaN(val)) {
+          numbers[key] = val;
+          return;
+        }
+        // Pourcentages au format "10.80%"
+        if (typeof val === 'string' && val.trim().endsWith('%')) {
+          const n = parseFloat(val.replace('%', '').replace(',', '.'));
+          if (!isNaN(n)) {
+            percentages[key] = n;
+            return;
+          }
+        }
+        // Chaînes numériques possibles
+        if (typeof val === 'string') {
+          const maybeNum = parseFloat(val.replace(/,/g, ''));
+          if (!isNaN(maybeNum)) {
+            numbers[key] = maybeNum;
+            return;
+          }
+        }
+        // Autres (texte)
+        others[key] = typeof val === 'object' ? JSON.stringify(val) : String(val);
+      });
+
+      const categories = {};
+      if (Object.keys(numbers).length) categories['Numbers'] = numbers;
+      if (Object.keys(percentages).length) categories['Percentages'] = percentages;
+      if (Object.keys(others).length) categories['Other'] = Object.fromEntries(
+        Object.entries(others).map(([k, v]) => [k, 0])
+      );
+
+      const entry = {
+        region: r.region || '',
+        categories: categories,
+        data: r,
+        Code: r.Code || r.id || code
+      };
+
+      // Indexer entry par plusieurs clés pour robustesse
+      if (r.Code) hierarchicalMap[r.Code] = entry;
+      if (r.id) hierarchicalMap[r.id] = entry;
+      if (r.region) hierarchicalMap[r.region] = entry;
+      hierarchicalMap[code] = entry; // normalized fallback
+
+      // Index pour recherches rapides
       if (r.region) covidByRegion[r.region] = r;
       if (r.Code) covidByCode[r.Code] = r;
       if (r.id) covidById[r.id] = r;
-      if (r.region) covidByNorm[normalize(r.region)] = r;
+      covidByNorm[normalize(r.region)] = r;
     });
 
+    // Si `hierarchicalData` est un tableau, convertir en mapping pour accès par code/nom
+    let hierarchicalDataMap = hierarchicalData;
+    if (Array.isArray(hierarchicalData)) {
+      hierarchicalDataMap = {};
+      hierarchicalData.forEach(r => {
+        const keyNorm = normalize(r.region);
+        if (r.Code) hierarchicalDataMap[r.Code] = r;
+        if (r.id) hierarchicalDataMap[r.id] = r;
+        if (r.region) hierarchicalDataMap[r.region] = r;
+        hierarchicalDataMap[keyNorm] = r;
+      });
+    }
+
+    // Construire dynamiquement des catégories à partir d'un enregistrement brut
+    function buildCategoriesFromRaw(r) {
+      const numbers = {};
+      const percentages = {};
+      const others = {};
+      Object.keys(r).forEach(key => {
+        if (key === 'region' || key === 'Code' || key === 'id' || key === 'latitude' || key === 'longitude') return;
+        const val = r[key];
+        if (val == null) return;
+        if (typeof val === 'number' && !isNaN(val)) {
+          numbers[key] = val;
+          return;
+        }
+        if (typeof val === 'string' && val.trim().endsWith('%')) {
+          const n = parseFloat(val.replace('%', '').replace(',', '.'));
+          if (!isNaN(n)) {
+            percentages[key] = n;
+            return;
+          }
+        }
+        if (typeof val === 'string') {
+          const maybeNum = parseFloat(val.replace(/,/g, ''));
+          if (!isNaN(maybeNum)) {
+            numbers[key] = maybeNum;
+            return;
+          }
+        }
+        others[key] = typeof val === 'object' ? JSON.stringify(val) : String(val);
+      });
+      const categories = {};
+      if (Object.keys(numbers).length) categories['Numbers'] = numbers;
+      if (Object.keys(percentages).length) categories['Percentages'] = percentages;
+      if (Object.keys(others).length) categories['Other'] = Object.fromEntries(
+        Object.entries(others).map(([k, v]) => [k, 0])
+      );
+      return categories;
+    }
+
+    // Retourne un objet normalisé { region, categories, data, Code }
+    function getHierarchicalForInfo(info) {
+      if (!info) return null;
+      const keysToTry = [info.Code, info.id, info.region, normalize(info.region)];
+      for (const k of keysToTry) {
+        if (!k) continue;
+        if (hierarchicalDataMap && hierarchicalDataMap[k]) {
+          const raw = hierarchicalDataMap[k];
+          // si déjà structuré avec categories
+          if (raw.categories) return raw;
+          return {
+            region: raw.region || info.region || '',
+            categories: buildCategoriesFromRaw(raw),
+            data: raw,
+            Code: raw.Code || raw.id || k
+          };
+        }
+        if (hierarchicalMap && hierarchicalMap[k]) {
+          return hierarchicalMap[k];
+        }
+      }
+      return null;
+    }
+
+    // Fonction pour retrouver les infos COVID à partir d'une feature GeoJSON
     function findInfo(feature) {
       const props = feature.properties || {};
-      const name = props['name:en'] || props.name || props.nom || props.NAME_1 || props.NAME || '';
-      if (covidByRegion[name]) return covidByRegion[name];
-      const n = normalize(name);
-      if (n && covidByNorm[n]) return covidByNorm[n];
+      const name = props.name || props['name:en'] || props.NAME_1 || props.NAME || props.nom || props.NOM || props.REGION || props.region || '';
+      const code = (props.code || props.id || props.ID || props.iso || '').toString();
 
-      const code = feature.id || props.code || props.iso || props.ID || '';
+      // Try direct code lookups
       if (code && covidByCode[code]) return covidByCode[code];
       if (code && covidById[code]) return covidById[code];
 
-      for (let k in covidByRegion) {
-        if (normalize(k) === n) return covidByRegion[k];
-      }
+      // Try name-based lookups
+      if (name && covidByRegion[name]) return covidByRegion[name];
 
+      const n = normalize(name);
+      if (n && covidByNorm[n]) return covidByNorm[n];
+
+      // fuzzy matching by normalized region name
       const MIN_FUZZY = 4;
       if (n && n.length >= MIN_FUZZY) {
         for (let k in covidByRegion) {
@@ -111,6 +244,11 @@ Promise.all([
             Population: ${info.population}<br/>
             PIB: ${info.contribution_gdp}
           `);
+          // Also update treemap on hover with the region's data
+          const h = getHierarchicalForInfo(info);
+          if (h) {
+            showTreemap(h.Code || info.Code || info.id || normalize(info.region), h);
+          }
         }
 
         d3.select(this).style("opacity", 0.6);
@@ -125,8 +263,30 @@ Promise.all([
       })
       .on("click", function (event, d) {
         const info = findInfo(d);
-        if (info && hierarchicalData[info.Code]) {
-          showTreemap(info.Code, hierarchicalData[info.Code]);
+        if (!info) return;
+
+        // Recherche robuste des données hiérarchiques : d'abord dans hierarchicalDataMap, sinon dans hierarchicalMap
+        const keysToTry = [info.Code, info.id, info.region, normalize(info.region)];
+        let hdata = null;
+        for (const k of keysToTry) {
+          if (!k) continue;
+          if (hierarchicalDataMap && hierarchicalDataMap[k]) {
+            hdata = hierarchicalDataMap[k];
+            break;
+          }
+          if (hierarchicalMap && hierarchicalMap[k]) {
+            hdata = hierarchicalMap[k];
+            break;
+          }
+        }
+
+        if (hdata) {
+          // If the structure is from hierarchicalMap we stored region/categories differently
+          if (!hdata.categories && hdata.data) {
+            showTreemap(info.Code || info.id || normalize(info.region), hdata);
+          } else {
+            showTreemap(info.Code || info.id || normalize(info.region), hdata);
+          }
         }
       });
 
