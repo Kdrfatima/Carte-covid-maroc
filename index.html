@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Carte Interactive du Maroc - Donut Chart</title>
+  <title>Carte Interactive du Maroc - Toutes les Régions</title>
   <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
   <script src="https://unpkg.com/topojson@3.0.2/dist/topojson.min.js"></script>
   <style>
@@ -55,7 +55,6 @@
       padding: 25px;
       border-radius: 15px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(10px);
     }
 
     .map-container {
@@ -82,7 +81,6 @@
     .region:hover {
       fill: #2196F3;
       stroke-width: 2.5px;
-      transform: scale(1.02);
     }
 
     .selected {
@@ -90,6 +88,14 @@
       stroke-width: 3px;
       stroke: #333;
       filter: drop-shadow(0 0 8px rgba(255, 152, 0, 0.6));
+    }
+
+    .region-with-data {
+      fill: #4CAF50;
+    }
+
+    .region-without-data {
+      fill: #9E9E9E;
     }
 
     .doughnut-chart {
@@ -110,14 +116,7 @@
       padding: 8px 12px;
       background: #f8f9fa;
       border-radius: 20px;
-      border: 2px solid transparent;
       transition: all 0.3s ease;
-    }
-
-    .legend-item:hover {
-      background: #e9ecef;
-      border-color: #007bff;
-      transform: translateY(-2px);
     }
 
     .legend-color {
@@ -126,7 +125,6 @@
       border-radius: 50%;
       margin-right: 8px;
       border: 2px solid white;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .legend-text {
@@ -145,10 +143,7 @@
       font-size: 14px;
       display: none;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
       z-index: 1000;
-      max-width: 300px;
     }
 
     .chart-title {
@@ -195,6 +190,14 @@
       font-size: 0.9em;
       opacity: 0.9;
     }
+
+    .region-info {
+      margin-top: 15px;
+      padding: 15px;
+      background: #e3f2fd;
+      border-radius: 8px;
+      text-align: center;
+    }
   </style>
 </head>
 
@@ -202,13 +205,17 @@
   <div class="container">
     <div class="header">
       <h1>🌍 Carte Interactive du Maroc</h1>
-      <p>Cliquez sur une région pour voir la répartition des données</p>
+      <p>Toutes les régions marocaines - Cliquez pour voir les données</p>
     </div>
 
     <div class="content">
       <div class="map-container">
-        <h2 style="text-align: center; color: #333; margin-bottom: 20px;">Carte des Régions</h2>
+        <h2 style="text-align: center; color: #333; margin-bottom: 20px;">Carte des 12 Régions du Maroc</h2>
         <svg id="map" width="500" height="500"></svg>
+        <div class="region-info">
+          <p><strong>🟢 Régions avec données</strong> | <strong>⚪ Régions sans données</strong></p>
+          <p>Cliquez sur n'importe quelle région pour voir les détails</p>
+        </div>
       </div>
 
       <div class="chart-container">
@@ -217,6 +224,7 @@
           <div class="no-data">
             <h3>🎯 Sélectionnez une région</h3>
             <p>Cliquez sur une région de la carte pour afficher ses données</p>
+            <p><strong>12 régions disponibles</strong></p>
           </div>
         </div>
       </div>
@@ -226,76 +234,11 @@
   <div id="tooltip"></div>
 
   <script>
-    // Données simplifiées pour le doughnut chart
-    const regionData = {
-      "TTH": {
-        region: "Tanger-Tétouan-Al Hoceima",
-        data: [
-          { category: "Santé", value: 45, color: "#FF6B6B" },
-          { category: "Éducation", value: 35, color: "#4ECDC4" },
-          { category: "Infrastructure", value: 60, color: "#45B7D1" },
-          { category: "Tourisme", value: 80, color: "#FFA07A" },
-          { category: "Agriculture", value: 40, color: "#98D8C8" }
-        ]
-      },
-      "CS": {
-        region: "Casablanca-Settat",
-        data: [
-          { category: "Santé", value: 85, color: "#FF6B6B" },
-          { category: "Éducation", value: 65, color: "#4ECDC4" },
-          { category: "Infrastructure", value: 90, color: "#45B7D1" },
-          { category: "Tourisme", value: 120, color: "#FFA07A" },
-          { category: "Industrie", value: 150, color: "#F7DC6F" }
-        ]
-      },
-      "FM": {
-        region: "Fès-Meknès",
-        data: [
-          { category: "Santé", value: 35, color: "#FF6B6B" },
-          { category: "Éducation", value: 45, color: "#4ECDC4" },
-          { category: "Infrastructure", value: 40, color: "#45B7D1" },
-          { category: "Artisanat", value: 70, color: "#BB8FCE" },
-          { category: "Agriculture", value: 55, color: "#98D8C8" }
-        ]
-      },
-      "RSK": {
-        region: "Rabat-Salé-Kénitra",
-        data: [
-          { category: "Santé", value: 55, color: "#FF6B6B" },
-          { category: "Éducation", value: 75, color: "#4ECDC4" },
-          { category: "Infrastructure", value: 65, color: "#45B7D1" },
-          { category: "Administration", value: 95, color: "#85C1E9" },
-          { category: "Services", value: 85, color: "#F8C471" }
-        ]
-      },
-      "MS": {
-        region: "Marrakesh-Safi",
-        data: [
-          { category: "Santé", value: 40, color: "#FF6B6B" },
-          { category: "Éducation", value: 30, color: "#4ECDC4" },
-          { category: "Tourisme", value: 110, color: "#FFA07A" },
-          { category: "Artisanat", value: 65, color: "#BB8FCE" },
-          { category: "Agriculture", value: 50, color: "#98D8C8" }
-        ]
-      },
-      "SM": {
-        region: "Souss-Massa",
-        data: [
-          { category: "Santé", value: 30, color: "#FF6B6B" },
-          { category: "Éducation", value: 25, color: "#4ECDC4" },
-          { category: "Agriculture", value: 85, color: "#98D8C8" },
-          { category: "Pêche", value: 45, color: "#5499C7" },
-          { category: "Tourisme", value: 60, color: "#FFA07A" }
-        ]
-      }
-    };
-
     // Configuration
     const width = 500;
     const height = 500;
     const doughnutWidth = 350;
     const doughnutHeight = 350;
-    const doughnutRadius = Math.min(doughnutWidth, doughnutHeight) / 2;
 
     // Sélections D3
     const svg = d3.select("#map")
@@ -308,21 +251,24 @@
     // Échelle de couleur pour la carte
     const regionColorScale = d3.scaleSequential(d3.interpolateBlues);
 
-    // Fonction de normalisation
+    // Fonction de normalisation améliorée
     function normalize(str) {
       return (str || '')
         .toString()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase()
-        .replace(/[^a-z0-9]/g, '');
+        .replace(/[^a-z0-9]/g, '')
+        .replace(/\s+/g, '');
     }
 
-    // Chargement des données
+    // Chargement de toutes les données
     Promise.all([
       d3.json("https://cdn.jsdelivr.net/npm/morocco-map/data/regions.json"),
-      d3.json("./covid_regions_maroc.json")
-    ]).then(([mapData, covidData]) => {
+      d3.json("./covid_regions_maroc.json"),
+      d3.json("./regions_data.json"),
+      d3.json("./region_mapping.json")
+    ]).then(([mapData, covidData, regionsData, regionMapping]) => {
       const regions = topojson.feature(mapData, mapData.objects.regions);
       const projection = d3.geoMercator().fitSize([width, height], regions);
       const pathGenerator = d3.geoPath().projection(projection);
@@ -341,24 +287,35 @@
       const maxCases = d3.max(covidData, d => d.Confirmed) || 1;
       regionColorScale.domain([0, maxCases]);
 
-      // Fonction pour trouver les données d'une région
+      // Fonction améliorée pour trouver les données d'une région
       function findRegionData(feature) {
         const props = feature.properties || {};
 
-        // Essayer par code
+        // Essayer par code direct
         const code = props.code || props.id || props.ISO3166_2;
-        if (code && regionData[code]) {
-          return { code, data: regionData[code] };
+        if (code && regionsData[code]) {
+          return { code, data: regionsData[code] };
         }
 
-        // Essayer par nom normalisé
+        // Essayer par nom avec mapping
         const name = props['name:en'] || props.name || props.nom || props.NAME_1 || props.NAME || '';
         const normalizedName = normalize(name);
 
-        // Correspondance par nom de région
-        for (const [regionCode, regionDataItem] of Object.entries(regionData)) {
-          if (normalize(regionDataItem.region) === normalizedName) {
-            return { code: regionCode, data: regionDataItem };
+        // Chercher dans le mapping
+        for (const [regionName, regionCode] of Object.entries(regionMapping)) {
+          if (normalize(regionName) === normalizedName) {
+            if (regionsData[regionCode]) {
+              return { code: regionCode, data: regionsData[regionCode] };
+            }
+          }
+        }
+
+        // Correspondance partielle
+        for (const [regionCode, regionData] of Object.entries(regionsData)) {
+          const regionNormalized = normalize(regionData.region);
+          if (regionNormalized.includes(normalizedName) || normalizedName.includes(regionNormalized)) {
+            console.log(`Correspondance partielle: ${name} -> ${regionData.region}`);
+            return { code: regionCode, data: regionData };
           }
         }
 
@@ -373,11 +330,8 @@
         .attr("class", "region")
         .attr("d", pathGenerator)
         .attr("fill", d => {
-          const props = d.properties || {};
-          const name = props['name:en'] || props.name || "Inconnu";
-          const normalizedName = normalize(name);
-          const covidInfo = covidByNormalizedName[normalizedName];
-          return covidInfo ? regionColorScale(covidInfo.Confirmed) : "#e0e0e0";
+          const regionInfo = findRegionData(d);
+          return regionInfo ? "#4CAF50" : "#9E9E9E";
         })
         .on("mouseover", function (event, d) {
           const props = d.properties || {};
@@ -391,6 +345,9 @@
           if (covidInfo) {
             tooltipContent += `<br/>🦠 Cas confirmés: ${covidInfo.Confirmed}`;
             tooltipContent += `<br/>💀 Décès: ${covidInfo.Deaths}`;
+            if (covidInfo.population) {
+              tooltipContent += `<br/>👥 Population: ${covidInfo.population.toLocaleString()}`;
+            }
           }
 
           if (regionInfo) {
@@ -440,7 +397,7 @@
         })
         .attr("text-anchor", "middle")
         .attr("dy", "0.35em")
-        .style("font-size", "9px")
+        .style("font-size", "8px")
         .style("font-weight", "bold")
         .style("fill", "white")
         .style("text-shadow", "1px 1px 2px black")
@@ -448,17 +405,23 @@
         .text(d => {
           const props = d.properties || {};
           const name = props['name:en'] || props.name || "";
-          return name.length > 12 ? name.substring(0, 10) + '...' : name;
+          // Raccourcir les noms longs
+          if (name.length > 15) {
+            return name.split(' ')[0];
+          }
+          return name;
         });
+
+      console.log("Carte chargée avec succès - 12 régions disponibles");
 
     }).catch(err => {
       console.error("Erreur de chargement:", err);
-      alert("Erreur de chargement des données de la carte");
+      alert("Erreur de chargement des données. Vérifiez les fichiers regions_data.json et region_mapping.json");
     });
 
     // Fonction pour afficher le doughnut chart
     function showDoughnutChart(regionCode, regionData) {
-      console.log("Affichage du doughnut chart pour:", regionCode, regionData);
+      console.log("Affichage des données pour:", regionCode, regionData);
 
       // Nettoyer le conteneur précédent
       doughnutContainer.selectAll("*").remove();
@@ -480,10 +443,12 @@
         .append("g")
         .attr("transform", `translate(${doughnutWidth / 2}, ${doughnutHeight / 2})`);
 
+      const radius = Math.min(doughnutWidth, doughnutHeight) / 2;
+
       // Créer l'arc pour le doughnut
       const arc = d3.arc()
-        .innerRadius(doughnutRadius * 0.6)
-        .outerRadius(doughnutRadius);
+        .innerRadius(radius * 0.6)
+        .outerRadius(radius);
 
       // Créer le pie generator
       const pie = d3.pie()
@@ -504,7 +469,8 @@
         .attr("stroke", "white")
         .attr("stroke-width", 2)
         .on("mouseover", function (event, d) {
-          const percentage = ((d.data.value / d3.sum(regionData.data, x => x.value)) * 100).toFixed(1);
+          const total = d3.sum(regionData.data, x => x.value);
+          const percentage = ((d.data.value / total) * 100).toFixed(1);
           tooltip.style("display", "block")
             .html(`
                             <strong>${d.data.category}</strong><br/>
@@ -573,7 +539,7 @@
         .attr("class", "stat-card")
         .html(`
                     <div class="stat-value">${maxCategory}</div>
-                    <div class="stat-label">Max</div>
+                    <div class="stat-label">Maximum</div>
                 `);
 
       const avg = Math.round(total / regionData.data.length);

@@ -1,0 +1,362 @@
+{
+    "TTH": {
+        "region": "Tanger-Tétouan-Al Hoceima",
+        "data": [
+            {
+                "category": "Santé",
+                "value": 45,
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "Éducation",
+                "value": 35,
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "Infrastructure",
+                "value": 60,
+                "color": "#45B7D1"
+            },
+            {
+                "category": "Tourisme",
+                "value": 80,
+                "color": "#FFA07A"
+            },
+            {
+                "category": "Agriculture",
+                "value": 40,
+                "color": "#98D8C8"
+            }
+        ]
+    },
+    "OR": {
+        "region": "Oriental",
+        "data": [
+            {
+                "category": "Santé",
+                "value": 30,
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "Éducation",
+                "value": 25,
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "Infrastructure",
+                "value": 35,
+                "color": "#45B7D1"
+            },
+            {
+                "category": "Tourisme",
+                "value": 45,
+                "color": "#FFA07A"
+            },
+            {
+                "category": "Industrie",
+                "value": 55,
+                "color": "#F7DC6F"
+            }
+        ]
+    },
+    "FM": {
+        "region": "Fès-Meknès",
+        "data": [
+            {
+                "category": "Santé",
+                "value": 35,
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "Éducation",
+                "value": 45,
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "Infrastructure",
+                "value": 40,
+                "color": "#45B7D1"
+            },
+            {
+                "category": "Artisanat",
+                "value": 70,
+                "color": "#BB8FCE"
+            },
+            {
+                "category": "Agriculture",
+                "value": 55,
+                "color": "#98D8C8"
+            }
+        ]
+    },
+    "RSK": {
+        "region": "Rabat-Salé-Kénitra",
+        "data": [
+            {
+                "category": "Santé",
+                "value": 55,
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "Éducation",
+                "value": 75,
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "Infrastructure",
+                "value": 65,
+                "color": "#45B7D1"
+            },
+            {
+                "category": "Administration",
+                "value": 95,
+                "color": "#85C1E9"
+            },
+            {
+                "category": "Services",
+                "value": 85,
+                "color": "#F8C471"
+            }
+        ]
+    },
+    "BK": {
+        "region": "Béni Mellal-Khénifra",
+        "data": [
+            {
+                "category": "Santé",
+                "value": 28,
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "Éducation",
+                "value": 32,
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "Infrastructure",
+                "value": 38,
+                "color": "#45B7D1"
+            },
+            {
+                "category": "Agriculture",
+                "value": 75,
+                "color": "#98D8C8"
+            },
+            {
+                "category": "Énergie",
+                "value": 42,
+                "color": "#F7DC6F"
+            }
+        ]
+    },
+    "CS": {
+        "region": "Casablanca-Settat",
+        "data": [
+            {
+                "category": "Santé",
+                "value": 85,
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "Éducation",
+                "value": 65,
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "Infrastructure",
+                "value": 90,
+                "color": "#45B7D1"
+            },
+            {
+                "category": "Tourisme",
+                "value": 120,
+                "color": "#FFA07A"
+            },
+            {
+                "category": "Industrie",
+                "value": 150,
+                "color": "#F7DC6F"
+            }
+        ]
+    },
+    "MS": {
+        "region": "Marrakesh-Safi",
+        "data": [
+            {
+                "category": "Santé",
+                "value": 40,
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "Éducation",
+                "value": 30,
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "Tourisme",
+                "value": 110,
+                "color": "#FFA07A"
+            },
+            {
+                "category": "Artisanat",
+                "value": 65,
+                "color": "#BB8FCE"
+            },
+            {
+                "category": "Agriculture",
+                "value": 50,
+                "color": "#98D8C8"
+            }
+        ]
+    },
+    "DT": {
+        "region": "Drâa-Tafilalet",
+        "data": [
+            {
+                "category": "Santé",
+                "value": 22,
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "Éducation",
+                "value": 18,
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "Tourisme",
+                "value": 35,
+                "color": "#FFA07A"
+            },
+            {
+                "category": "Artisanat",
+                "value": 28,
+                "color": "#BB8FCE"
+            },
+            {
+                "category": "Agriculture",
+                "value": 42,
+                "color": "#98D8C8"
+            }
+        ]
+    },
+    "SM": {
+        "region": "Souss-Massa",
+        "data": [
+            {
+                "category": "Santé",
+                "value": 30,
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "Éducation",
+                "value": 25,
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "Agriculture",
+                "value": 85,
+                "color": "#98D8C8"
+            },
+            {
+                "category": "Pêche",
+                "value": 45,
+                "color": "#5499C7"
+            },
+            {
+                "category": "Tourisme",
+                "value": 60,
+                "color": "#FFA07A"
+            }
+        ]
+    },
+    "GO": {
+        "region": "Guelmim-Oued Noun",
+        "data": [
+            {
+                "category": "Santé",
+                "value": 15,
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "Éducation",
+                "value": 12,
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "Pêche",
+                "value": 25,
+                "color": "#5499C7"
+            },
+            {
+                "category": "Tourisme",
+                "value": 18,
+                "color": "#FFA07A"
+            },
+            {
+                "category": "Élevage",
+                "value": 22,
+                "color": "#A569BD"
+            }
+        ]
+    },
+    "LS": {
+        "region": "Laâyoune-Sakia El Hamra",
+        "data": [
+            {
+                "category": "Santé",
+                "value": 20,
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "Éducation",
+                "value": 15,
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "Pêche",
+                "value": 30,
+                "color": "#5499C7"
+            },
+            {
+                "category": "Tourisme",
+                "value": 25,
+                "color": "#FFA07A"
+            },
+            {
+                "category": "Industrie",
+                "value": 35,
+                "color": "#F7DC6F"
+            }
+        ]
+    },
+    "DO": {
+        "region": "Dakhla-Oued Ed-Dahab",
+        "data": [
+            {
+                "category": "Santé",
+                "value": 18,
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "Éducation",
+                "value": 14,
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "Pêche",
+                "value": 40,
+                "color": "#5499C7"
+            },
+            {
+                "category": "Tourisme",
+                "value": 32,
+                "color": "#FFA07A"
+            },
+            {
+                "category": "Énergie",
+                "value": 28,
+                "color": "#F7DC6F"
+            }
+        ]
+    }
+}
