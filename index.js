@@ -228,7 +228,7 @@ Promise.all([
       .attr("d", pathGenerator)
       .attr("fill", d => {
         const info = findInfo(d);
-        return info ? colorScale(info.Confirmed) : "#ccc";
+        return info ? colorScale(info.Confirmed) : "#cecfd4ff";
       })
       .on("mouseover", function (event, d) {
         const info = findInfo(d);
